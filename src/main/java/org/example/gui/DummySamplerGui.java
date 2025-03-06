@@ -32,68 +32,84 @@ public class DummySamplerGui extends AbstractSamplerGui {
     // Create the chat panel with input fields and chat display area
     private JPanel createChatPanel() {
         JPanel chatPanel = new JPanel(new BorderLayout());
-
+    
         // Setup JEditorPane for HTML display
         chatArea.setContentType("text/html");
         chatArea.setEditable(false);
         chatArea.setText("<html><body>" + formatHtmlMessage("Welcome to JMeter AI Assistant!") + "</body></html>");
-
+    
         chatPanel.add(new JScrollPane(chatArea), BorderLayout.CENTER);
-
-        JPanel inputPanel = new JPanel(new BorderLayout());
+    
         JPanel tokenPanel = new JPanel(new BorderLayout());
         tokenPanel.add(new JLabel("AI Token:"), BorderLayout.WEST);
         tokenPanel.add(apiTokenField, BorderLayout.CENTER);
         chatPanel.add(tokenPanel, BorderLayout.NORTH);
-
+    
+        // Create a panel for buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton readScriptButton = new JButton("Read Script");
+        JButton readLogsButton = new JButton("Read Logs");
+        JButton readResultButton = new JButton("Read Result");
+    
+        // Add buttons to button panel
+        buttonPanel.add(readScriptButton);
+        buttonPanel.add(readLogsButton);
+        buttonPanel.add(readResultButton);
+    
+        // Create a panel for user input and send button
+        JPanel inputPanel = new JPanel(new BorderLayout());
         inputPanel.add(userInput, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
-        chatPanel.add(inputPanel, BorderLayout.SOUTH);
-
-        // Add action listener to the send button
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String userText = userInput.getText().trim();
-                String apiToken = new String(apiTokenField.getPassword()).trim();
-
-                if (userText.isEmpty()) {
-                    LOG.warn("User attempted to send an empty message.");
-                    return; // Ignore empty messages
-                }
-
-                if (apiToken.isEmpty()) {
-                    LOG.error("No API Key found.");
-                    appendToChat("<b>AI Error:</b> No API Key Found");
-                    return;
-                }
-
-                LOG.info("User message: {}", userText);
-
-                // Append user message to chat
-                appendToChat("<b>You:</b> " + userText);
-                userInput.setText(""); // Clear input field
-
-                // Run API call in a separate thread
-                new Thread(() -> {
-                    LOG.info("Sending message to API: {}", userText);
-                    String aiResponse = ApiClient.sendToAI(userText, apiToken);
-
-                    SwingUtilities.invokeLater(() -> {
-                        String formattedResponse = aiResponse.startsWith("Error")
-                                ? formatHtmlMessage("<b>AI Error:</b> " + aiResponse)
-                                : formatHtmlResponse(aiResponse);
-
-                        LOG.info("Received API response: {}", aiResponse);
-                        appendToChat(formattedResponse);
-                    });
-                }).start();
+    
+        // Wrap both panels in another panel
+        JPanel southPanel = new JPanel(new BorderLayout());
+        southPanel.add(buttonPanel, BorderLayout.NORTH);
+        southPanel.add(inputPanel, BorderLayout.SOUTH);
+    
+        // Add the combined panel to chatPanel
+        chatPanel.add(southPanel, BorderLayout.SOUTH);
+    
+        // Add action listener to send button
+        sendButton.addActionListener(e -> {
+            String userText = userInput.getText().trim();
+            String apiToken = new String(apiTokenField.getPassword()).trim();
+    
+            if (userText.isEmpty()) {
+                LOG.warn("User attempted to send an empty message.");
+                return; // Ignore empty messages
             }
+    
+            if (apiToken.isEmpty()) {
+                LOG.error("No API Key found.");
+                appendToChat("<b>AI Error:</b> No API Key Found");
+                return;
+            }
+    
+            LOG.info("User message: {}", userText);
+    
+            // Append user message to chat
+            appendToChat("<b>You:</b> " + userText);
+            userInput.setText(""); // Clear input field
+    
+            // Run API call in a separate thread
+            new Thread(() -> {
+                LOG.info("Sending message to API: {}", userText);
+                String aiResponse = ApiClient.sendToAI(userText, apiToken);
+    
+                SwingUtilities.invokeLater(() -> {
+                    String formattedResponse = aiResponse.startsWith("Error")
+                            ? formatHtmlMessage("<b>AI Error:</b> " + aiResponse)
+                            : formatHtmlResponse(aiResponse);
+    
+                    LOG.info("Received API response: {}", aiResponse);
+                    appendToChat(formattedResponse);
+                });
+            }).start();
         });
-
+    
         return chatPanel;
     }
-
+    
     // Append new messages to the chat window properly
     private void appendToChat(String message) {
         SwingUtilities.invokeLater(() -> {

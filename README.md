@@ -52,33 +52,41 @@ target/
 ### Installation
 
 1. Clone the repository:
-    ```sh
-    git clone <repository-url>
-    cd jmeter-ai-plugin
-    ```
+
+   ```sh
+   git clone <repository-url>
+   cd jmeter-ai-plugin
+   ```
 
 2. Build the project using Maven:
-    ```sh
-    mvn clean install
-    ```
+   ```sh
+   mvn clean install
+   ```
 
 ### Configuration
 
 1. Create a `.env` file in the root directory with your AI access token:
-    ```env
-    ACCESS_TOKEN=your_access_token_here
-    ```
+   ```env
+   ACCESS_TOKEN=your_access_token_here
+   ```
 
 ### Usage
 
 1. Open JMeter and add the `DummySampler` to your test plan.
 2. Configure the `DummySamplerGui` to interact with the AI assistant.
 
+### Additional Setup
+
+1. Download the `json-20210307.jar` from Maven Repository.
+2. Place it in `lib/ext` of your JMeter installation.
+3. Restart JMeter.
+
 ## Development
 
 ### Adding Dependencies
 
 To add new dependencies, update the `pom.xml` file and run:
+
 ```sh
 mvn clean install
 ```
@@ -86,6 +94,7 @@ mvn clean install
 ### Running Tests
 
 To run tests, use the following command:
+
 ```sh
 mvn test
 ```
