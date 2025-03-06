@@ -21,7 +21,7 @@ public class ApiClient {
             // JSON payload
             String jsonPayload = "{" +
                     "\"messages\": [" +
-                    "    {\"role\": \"system\", \"content\": \"You are a Data Analysis expert\"}," +
+                    "    {\"role\": \"system\", \"content\": \"You are a performance tool Jmeter expert\"}," +
                     "    {\"role\": \"user\", \"content\": \"" + userMessage + "\"}" +
                     "]," +
                     "\"search_provider\": \"Bing\"," +
