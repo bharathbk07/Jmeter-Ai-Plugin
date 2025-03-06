@@ -20,6 +20,7 @@ public class DummySamplerGui extends AbstractSamplerGui {
     private final JButton sendButton = new JButton("Send");
 
     public DummySamplerGui() {
+        // Set layout and border for the GUI
         setLayout(new BorderLayout());
         setBorder(makeBorder());
         add(makeTitlePanel(), BorderLayout.NORTH);
@@ -28,6 +29,7 @@ public class DummySamplerGui extends AbstractSamplerGui {
         LOG.info("DummySamplerGui initialized");
     }
 
+    // Create the chat panel with input fields and chat display area
     private JPanel createChatPanel() {
         JPanel chatPanel = new JPanel(new BorderLayout());
 
@@ -48,6 +50,7 @@ public class DummySamplerGui extends AbstractSamplerGui {
         inputPanel.add(sendButton, BorderLayout.EAST);
         chatPanel.add(inputPanel, BorderLayout.SOUTH);
 
+        // Add action listener to the send button
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,7 +59,7 @@ public class DummySamplerGui extends AbstractSamplerGui {
 
                 if (userText.isEmpty()) {
                     LOG.warn("User attempted to send an empty message.");
-                    return;  // Ignore empty messages
+                    return; // Ignore empty messages
                 }
 
                 if (apiToken.isEmpty()) {
@@ -67,9 +70,9 @@ public class DummySamplerGui extends AbstractSamplerGui {
 
                 LOG.info("User message: {}", userText);
 
-                // Append user message
+                // Append user message to chat
                 appendToChat("<b>You:</b> " + userText);
-                userInput.setText("");  // Clear input field
+                userInput.setText(""); // Clear input field
 
                 // Run API call in a separate thread
                 new Thread(() -> {
@@ -77,9 +80,9 @@ public class DummySamplerGui extends AbstractSamplerGui {
                     String aiResponse = ApiClient.sendToAI(userText, apiToken);
 
                     SwingUtilities.invokeLater(() -> {
-                        String formattedResponse = aiResponse.startsWith("Error") ?
-                                formatHtmlMessage("<b>AI Error:</b> " + aiResponse) :
-                                formatHtmlResponse(aiResponse);
+                        String formattedResponse = aiResponse.startsWith("Error")
+                                ? formatHtmlMessage("<b>AI Error:</b> " + aiResponse)
+                                : formatHtmlResponse(aiResponse);
 
                         LOG.info("Received API response: {}", aiResponse);
                         appendToChat(formattedResponse);
@@ -104,7 +107,8 @@ public class DummySamplerGui extends AbstractSamplerGui {
             // Insert the new message properly before </body>
             int bodyEndIndex = currentText.lastIndexOf("</body>");
             if (bodyEndIndex != -1) {
-                currentText = currentText.substring(0, bodyEndIndex) + formatHtmlMessage(message) + currentText.substring(bodyEndIndex);
+                currentText = currentText.substring(0, bodyEndIndex) + formatHtmlMessage(message)
+                        + currentText.substring(bodyEndIndex);
             } else {
                 // Fallback if structure is somehow broken
                 currentText = "<html><body>" + formatHtmlMessage("Welcome to JMeter AI Assistant!") +
@@ -117,21 +121,20 @@ public class DummySamplerGui extends AbstractSamplerGui {
         });
     }
 
-
     // Convert plain text to formatted HTML
     private String formatHtmlMessage(String message) {
         // Replace common Markdown syntax with HTML
         message = message
-                .replaceAll("(?m)^### (.+)$", "<h3>$1</h3>")  // H3 Headers
-                .replaceAll("(?m)^## (.+)$", "<h2>$1</h2>")   // H2 Headers
-                .replaceAll("(?m)^# (.+)$", "<h1>$1</h1>")    // H1 Headers
+                .replaceAll("(?m)^### (.+)$", "<h3>$1</h3>") // H3 Headers
+                .replaceAll("(?m)^## (.+)$", "<h2>$1</h2>") // H2 Headers
+                .replaceAll("(?m)^# (.+)$", "<h1>$1</h1>") // H1 Headers
                 .replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>") // Bold (**text**)
-                .replaceAll("\\*(.*?)\\*", "<i>$1</i>")       // Italic (*text*)
-                .replaceAll("`([^`]*)`", "<code>$1</code>")   // Inline Code
+                .replaceAll("\\*(.*?)\\*", "<i>$1</i>") // Italic (*text*)
+                .replaceAll("`([^`]*)`", "<code>$1</code>") // Inline Code
                 .replaceAll("```\\s*groovy([\\s\\S]*?)```", "<pre><code>$1</code></pre>") // Groovy Code Blocks
                 .replaceAll("```([\\s\\S]*?)```", "<pre><code>$1</code></pre>") // Other Code Blocks
-                .replaceAll("(?m)^- (.+)$", "<li>$1</li>")  // Bullet Points
-                .replaceAll("\n", "<br>");                 // Preserve line breaks
+                .replaceAll("(?m)^- (.+)$", "<li>$1</li>") // Bullet Points
+                .replaceAll("\n", "<br>"); // Preserve line breaks
 
         // Wrap bullet points in <ul>
         message = message.replaceAll("(<li>.*?</li>)+", "<ul>$0</ul>");
@@ -140,15 +143,16 @@ public class DummySamplerGui extends AbstractSamplerGui {
         return "<div style='font-family: Arial, sans-serif; font-size: 12px; padding: 5px;'>" + message + "</div>";
     }
 
-
+    // Format AI response from markdown to HTML
     private String formatHtmlResponse(String markdownResponse) {
         // Replace markdown-style formatting with HTML
         String formattedResponse = markdownResponse
                 .replace("**", "<b>").replace("**", "</b>") // Bold
-                .replace("*", "<i>").replace("*", "</i>")   // Italic
-                .replace("\n", "<br>");                    // Line breaks
+                .replace("*", "<i>").replace("*", "</i>") // Italic
+                .replace("\n", "<br>"); // Line breaks
 
-        return "<div style='font-family: Arial, sans-serif; font-size: 12px; padding: 5px;'>" + formattedResponse + "</div>";
+        return "<div style='font-family: Arial, sans-serif; font-size: 12px; padding: 5px;'>" + formattedResponse
+                + "</div>";
     }
 
     @Override

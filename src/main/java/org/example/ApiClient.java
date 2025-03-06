@@ -9,16 +9,21 @@ import org.json.JSONObject;
 public class ApiClient {
     private static final String API_URL = "https://api.lab45.ai/v1.1/skills/completion/query";
 
+    // Method to send a message to the AI and get a response
     public static String sendToAI(String userMessage, String accessToken) {
         try {
+            // Create URL object
             URL url = new URL(API_URL);
+            // Open connection
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            // Set request method to POST
             conn.setRequestMethod("POST");
+            // Set request headers
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
             conn.setDoOutput(true);
 
-            // JSON payload
+            // JSON payload to send to the AI
             String jsonPayload = "{" +
                     "\"messages\": [" +
                     "    {\"role\": \"system\", \"content\": \"You are a performance tool Jmeter expert\"}," +
@@ -40,11 +45,13 @@ public class ApiClient {
                 os.write(input, 0, input.length);
             }
 
-            // Read response
+            // Get response code
             int responseCode = conn.getResponseCode();
-            InputStream inputStream = (responseCode >= 200 && responseCode < 300) ?
-                    conn.getInputStream() : conn.getErrorStream();
+            // Get input stream based on response code
+            InputStream inputStream = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream()
+                    : conn.getErrorStream();
 
+            // Read response
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String responseLine;
