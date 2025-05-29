@@ -1,82 +1,180 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>jmeter-ai-plugin</artifactId>
+    <groupId>org.example.jmetercopilot</groupId>
+    <artifactId>jmeter-copilot-plugin</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>JMeter Copilot Plugin</name>
+    <description>An intelligent assistant plugin for Apache JMeter.</description>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <jmeter.version>5.6.3</jmeter.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <json.version>20231013</json.version>
+        <flexmark.version>0.64.8</flexmark.version>
+        <slf4j.version>2.0.7</slf4j.version>
+        <commons-lang3.version>3.13.0</commons-lang3.version>
+        <commons-io.version>2.15.0</commons-io.version>
+        <junit.jupiter.version>5.10.0</junit.jupiter.version>
     </properties>
 
     <dependencies>
+        <!-- JMeter Core -->
         <dependency>
             <groupId>org.apache.jmeter</groupId>
             <artifactId>ApacheJMeter_core</artifactId>
-            <version>5.6.2</version>
+            <version>${jmeter.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- JMeter JavaFX GUI (Optional, for UI-related classes) -->
-        <dependency>
-            <groupId>org.apache.jmeter</groupId>
-            <artifactId>ApacheJMeter_javafx</artifactId>
-            <version>5.6.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.jmeter</groupId>
-            <artifactId>ApacheJMeter_components</artifactId>
-            <version>5.6.2</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- JMeter Java Sampler & Protocol Support (includes JSR223 elements) -->
         <dependency>
             <groupId>org.apache.jmeter</groupId>
             <artifactId>ApacheJMeter_java</artifactId>
-            <version>5.6.2</version>
+            <version>${jmeter.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- JMeter HTTP Sampler Support -->
         <dependency>
             <groupId>org.apache.jmeter</groupId>
-            <artifactId>ApacheJMeter_core</artifactId>
-            <version>5.6.2</version>
+            <artifactId>ApacheJMeter_http</artifactId>
+            <version>${jmeter.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Add the dependency that contains JMeterToolbarPlugin -->
+        
+        <!-- JMeter Components (for various other elements like timers, assertions) -->
         <dependency>
             <groupId>org.apache.jmeter</groupId>
-            <artifactId>ApacheJMeter</artifactId>
-            <version>5.6.2</version>
+            <artifactId>ApacheJMeter_components</artifactId>
+            <version>${jmeter.version}</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- JSON library -->
+        <!-- JMeter bundles org.json via geronimo-json_1.0_spec. 
+             If that's sufficient, this explicit dependency can be marked 'provided' or removed.
+             Included here in case a specific/newer version is needed for the ApiClient. -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20210307</version>
+            <version>${json.version}</version>
+        </dependency>
+
+        <!-- Markdown Rendering (Flexmark) -->
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>${flexmark.version}</version>
+        </dependency>
+        
+        <!-- Logging Facade (SLF4J) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>provided</scope> 
+        </dependency>
+
+        <!-- (Optional) Apache Commons Lang -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+            <!-- Check if JMeter's bundled version is sufficient; if so, scope:provided -->
+        </dependency>
+
+        <!-- (Optional) Apache Commons IO -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <!-- Check if JMeter's bundled version is sufficient; if so, scope:provided -->
+        </dependency>
+        
+        <!-- Test Dependencies (JUnit 5) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
-
-            <!-- JAR Plugin -->
+            <!-- Optional: Maven Surefire Plugin for running tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+             <!-- Optional: Shade plugin if you need to bundle dependencies not provided by JMeter
+                  (e.g., if using a specific version of org.json not from JMeter, or flexmark) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Minimize JAR size by excluding unnecessary files -->
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <!-- Define what to do with conflicting files, e.g. service files -->
+                             <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+                            <!-- Relocate packages to avoid conflicts if bundling libraries that JMeter might also use -->
+                            <!--
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.vladsch.flexmark</pattern>
+                                    <shadedPattern>org.example.jmetercopilot.shaded.flexmark</shadedPattern>
+                                </relocation>
+                                 <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>org.example.jmetercopilot.shaded.orgjson</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            -->
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

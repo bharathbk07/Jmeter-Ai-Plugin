@@ -17,10 +17,16 @@ public class ApiClient {
     private static final String API_URL = "https://api.lab45.ai/v1.1/skills/completion/query"; // As provided
     private String apiKey; // To be set by the plugin
 
+    // Add fields for configurable parameters with defaults
+    private String modelName = "gpt-4o"; // Default model
+    private double temperature = 0.3;    // Default temperature
+    private int maxOutputTokens = 4096; // Default max tokens
+
     public ApiClient() {
-        // API key should be loaded from settings or user input
+        // API key and other settings will be loaded/set via setters
     }
 
+    // Setter methods for parameters
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
     }
@@ -28,6 +34,30 @@ public class ApiClient {
     public String getApiKey() {
         return this.apiKey;
     }
+
+    public void setModelName(String modelName) {
+        if (modelName != null && !modelName.isEmpty()) {
+            this.modelName = modelName;
+        }
+    }
+
+    public String getModelName() { return modelName; }
+
+    public void setTemperature(double temperature) {
+        // Add validation if needed (e.g., temperature between 0.0 and 2.0)
+        this.temperature = temperature;
+    }
+
+    public double getTemperature() { return temperature; }
+
+    public void setMaxOutputTokens(int maxOutputTokens) {
+        // Add validation if needed (e.g., positive value)
+        if (maxOutputTokens > 0) {
+            this.maxOutputTokens = maxOutputTokens;
+        }
+    }
+
+    public int getMaxOutputTokens() { return maxOutputTokens; }
 
     public String sendQuery(String userMessage, String systemMessage) {
         if (this.apiKey == null || this.apiKey.isEmpty()) {
@@ -40,7 +70,7 @@ public class ApiClient {
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             conn.setRequestProperty("Accept", "application/json");
-            conn.setRequestProperty("Authorization", "Bearer " + this.apiKey);
+            conn.setRequestProperty("Authorization", "Bearer " + this.apiKey); // Ensure apiKey is used
             conn.setDoOutput(true);
 
             // Construct JSON payload using org.json
@@ -60,13 +90,13 @@ public class ApiClient {
             rootPayload.put("messages", messagesArray);
             rootPayload.put("search_provider", "Bing"); // As per your example
             rootPayload.put("stream_response", false);
-
+            
             JSONObject skillParameters = new JSONObject();
-            skillParameters.put("max_output_tokens", 4096);
-            skillParameters.put("temperature", 0.3);
+            skillParameters.put("max_output_tokens", this.maxOutputTokens); // Use member variable
+            skillParameters.put("temperature", this.temperature);       // Use member variable
             skillParameters.put("return_sources", true);
-            skillParameters.put("model_name", "gpt-4o"); // As per your example
-            rootPayload.put("skill_parameters", skillParameters);
+            skillParameters.put("model_name", this.modelName);           // Use member variable
+            rootPayload.put("skill_parameters", skillParameters); // This now uses the dynamic values
 
             String jsonPayloadString = rootPayload.toString();
 
@@ -125,12 +155,23 @@ public class ApiClient {
         ApiClient client = new ApiClient();
         // IMPORTANT: Replace "YOUR_API_KEY" with a valid key for testing locally.
         // Do NOT commit actual keys to version control.
-        client.setApiKey("YOUR_API_KEY"); 
+        // client.setApiKey("YOUR_API_KEY"); // Set API Key for testing
+        // client.setModelName("gpt-3.5-turbo"); // Example: set other params
+        // client.setTemperature(0.7);
 
-        if ("YOUR_API_KEY".equals(client.getApiKey())) {
+        if (client.getApiKey() == null || "YOUR_API_KEY".equals(client.getApiKey()) || client.getApiKey().isEmpty()) {
             System.out.println("Please set your API key in ApiClient.main to test.");
-            return;
+            System.out.println("Usage: java -DapiKey=YOUR_ACTUAL_KEY org.example.jmetercopilot.ApiClient");
+            String apiKeyFromProperty = System.getProperty("apiKey");
+            if(apiKeyFromProperty != null && !apiKeyFromProperty.isEmpty()){
+                client.setApiKey(apiKeyFromProperty);
+                System.out.println("Using API Key from system property: " + apiKeyFromProperty.substring(0,5) + "...");
+            } else {
+                return;
+            }
         }
+        
+        System.out.println("Using Model: " + client.getModelName() + ", Temp: " + client.getTemperature() + ", MaxTokens: " + client.getMaxOutputTokens());
 
         String systemPrompt = "You are a performance tool JMeter expert.";
         String userQuery = "What is correlation in JMeter?";
