@@ -21,6 +21,13 @@
             <version>5.6.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- JMeter JavaFX GUI (Optional, for UI-related classes) -->
+        <dependency>
+            <groupId>org.apache.jmeter</groupId>
+            <artifactId>ApacheJMeter_javafx</artifactId>
+            <version>5.6.2</version>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.jmeter</groupId>
             <artifactId>ApacheJMeter_components</artifactId>

@@ -16,6 +16,12 @@ public class DummySampler extends AbstractSampler {
     private static final String RESPONSE_CODE = "Dummy.responseCode";
     private static final String SUCCESS = "Dummy.Success";
 
+    private static final String MODEL = "AI_MODEL";
+    private static final String TOKEN = "AI_TOKEN";
+    private static final String TEMPERATURE = "AI_TEMPERATURE";
+    private static final String MAX_TOKENS = "AI_MAX_TOKENS";
+    private static final String REQUEST = "AI_REQUEST";
+
     public void setResponseTime(int responseTime) {
         setProperty(RESPONSE_TIME_PROPERTY, responseTime);
     }
@@ -48,6 +54,46 @@ public class DummySampler extends AbstractSampler {
         return getPropertyAsBoolean(SUCCESS, true);
     }
 
+    public String getModel() {
+        return getPropertyAsString(MODEL);
+    }
+
+    public void setModel(String model) {
+        setProperty(MODEL, model);
+    }
+
+    public String getToken() {
+        return getPropertyAsString(TOKEN);
+    }
+
+    public void setToken(String token) {
+        setProperty(TOKEN, token);
+    }
+
+    public String getTemperature() {
+        return getPropertyAsString(TEMPERATURE);
+    }
+
+    public void setTemperature(String temp) {
+        setProperty(TEMPERATURE, temp);
+    }
+
+    public String getMaxTokens() {
+        return getPropertyAsString(MAX_TOKENS);
+    }
+
+    public void setMaxTokens(String tokens) {
+        setProperty(MAX_TOKENS, tokens);
+    }
+
+    public String getRequest() {
+        return getPropertyAsString(REQUEST);
+    }
+
+    public void setRequest(String request) {
+        setProperty(REQUEST, request);
+    }
+
     public SampleResult sample(Entry entry) {
         SampleResult result = new SampleResult();
         result.setSampleLabel(getLabel());
@@ -67,4 +113,3 @@ public class DummySampler extends AbstractSampler {
     }
 
 }
-
