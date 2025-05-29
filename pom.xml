@@ -92,7 +92,7 @@
 
         <!-- (Optional) Apache Commons IO -->
         <dependency>
-            <groupId>org.apache.commons</groupId>
+            <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
             <!-- Check if JMeter's bundled version is sufficient; if so, scope:provided -->
