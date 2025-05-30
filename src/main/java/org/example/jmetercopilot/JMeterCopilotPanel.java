@@ -233,18 +233,6 @@ public class JMeterCopilotPanel extends JPanel implements ActionListener {
                     }
                 }
             }
-                        "\n\n--- JMETER EDIT MODE CONTEXT ---" +
-                        "\nThe user has issued a command to modify the JMeter test plan." +
-                        "\nYour primary goal is to help the user achieve this by:" +
-                        "\n1. Understanding the command and identifying the target JMeter elements and desired changes." +
-                        "\n2. If the command is clear and safe, provide the precise JMX snippet for the new/modified element(s) or specific instructions on what to change. Ensure the JMX is well-formed and complete for the element in question." +
-                        "\n3. If the command implies a destructive action (e.g., deleting elements, overwriting significant configurations), clearly state what will be changed and explicitly ask the user for confirmation (e.g., 'This will delete X. Proceed? Reply Yes/No.')." +
-                        "\n4. If the command is ambiguous or lacks detail, ask clarifying questions." +
-                        "\n5. When providing JMX, ensure it's enclosed in appropriate markers like ```jmx ... ``` or clearly identifiable as JMX code." +
-                        "\nUser's command: '" + inputText + "'"; // Include user's command for context to AI
-                    return apiClient.sendQuery(inputText, editSystemPrompt);
-                }
-            }
 
             @Override
             protected void done() {
