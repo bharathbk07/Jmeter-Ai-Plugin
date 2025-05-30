@@ -18,8 +18,8 @@ public class CopilotAction implements Command {
     }
 
     @Override
-    public String[] getActionNames() {
-        return commands.toArray(new String[0]);
+    public Set<String> getActionNames() {
+        return commands;
     }
 
     @Override

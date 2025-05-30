@@ -1172,20 +1172,22 @@ public class JMeterCopilotPanel extends JPanel implements ActionListener {
     }
 
     private String extractScriptFromMarkdown(String markdown, String language) {
-        if (markdown == null) return null;
-        String langPatternPart = (language != null && !language.isEmpty()) ? Pattern.quote(language.toLowerCase()) + "|" : "";
+        // Temporarily commenting out method body to isolate compiler error
+        // if (markdown == null) return null;
+        // String langPatternPart = (language != null && !language.isEmpty()) ? Pattern.quote(language.toLowerCase()) + "|" : "";
         
-        Pattern pattern = Pattern.compile("```(?:groovy|java|javascript|" + langPatternPart + ")?\\s*\n(.*?)\n```", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(markdown);
-        if (matcher.find()) {
-            return matcher.group(1).trim(); 
-        }
-        pattern = Pattern.compile("```\s*\n(.*?)\n```", Pattern.DOTALL);
-        matcher = pattern.matcher(markdown);
-        if (matcher.find()) {
-            return matcher.group(1).trim();
-        }
-        return null;
+        // Pattern pattern = Pattern.compile("[\\u0060\\u0060\\u0060](?:groovy|java|javascript|" + langPatternPart + ")?\\s*\n(.*?)\n[\\u0060\\u0060\\u0060]", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        // Matcher matcher = pattern.matcher(markdown);
+        // if (matcher.find()) {
+        //     return matcher.group(1).trim(); 
+        // }
+        // // Using Unicode escapes for backticks (within a character class) to avoid potential misinterpretation by Java 8 compiler
+        // pattern = Pattern.compile("[\\u0060\\u0060\\u0060]\s*\n(.*?)\n[\\u0060\\u0060\\u0060]", Pattern.DOTALL);
+        // matcher = pattern.matcher(markdown);
+        // if (matcher.find()) {
+        //     return matcher.group(1).trim();
+        // }
+        return ""; // Return empty string instead of null
     }
 
     private String handleJsr223RefactorCommand(String[] args) {

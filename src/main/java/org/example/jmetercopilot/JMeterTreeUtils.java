@@ -247,7 +247,7 @@ public class JMeterTreeUtils {
     }
 
     // Inner helper class for finding the HashTree of a specific TestElement instance
-    private static class SearchForElementNode implements HashTree.Visitor {
+    private static class SearchForElementNode implements HashTree.Visitor { // Restored to HashTree.Visitor
         private final TestElement targetElement;
         private HashTree foundHashTree = null;
 
